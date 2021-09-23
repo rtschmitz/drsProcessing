@@ -8,7 +8,7 @@ This is the more developed processing chain. There are two scripts: "v4", which 
 with bias voltage information to be used during bias voltage sweeps.
 
 Usage:
-python processMultiBoardBinary_v4.py -b <BINARYFILE> [-o OUTFILE -v BIAS -x TXTDUMPBOOL -w WAVEFORMBOOL]
+python processMultiBoardBinary_v4.py -b BINARYFILE [-o OUTFILE -v BIAS -x TXTDUMPBOOL -w WAVEFORMBOOL]
 
 -b: path to the binary file you want to process
 
@@ -20,7 +20,7 @@ python processMultiBoardBinary_v4.py -b <BINARYFILE> [-o OUTFILE -v BIAS -x TXTD
 
 -w: Bool, if set to true will dump the waveform into to the ROOT file
 
-python processMultiBoardBinary_scans.py -b <BINARYFILE> -c <CSVPATH> [-o OUTFILE -w WAVEFORMBOOL]
+python processMultiBoardBinary_scans.py -b BINARYFILE -c CSVPATH [-o OUTFILE -w WAVEFORMBOOL]
 
 Same as above except for:
 -c: CSV file with bias voltage information, meant for bias voltage sweeps. Configured to work for a Keithley current source
