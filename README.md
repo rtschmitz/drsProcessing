@@ -30,7 +30,7 @@ Same as above except for:
 This is a newer chain, but depending on your workflow you might prefer it. Compile as usual with g++ -o [EXECUTABLE_NAME] process.cc, then run with:
 
 Usage:
-./process <filename> [waveFormOutBool]
+./process filename [waveFormOutBool]
 
 filename: path to the binary file you want to process
 
