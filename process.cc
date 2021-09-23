@@ -55,7 +55,7 @@ int main(int argc, const char * argv[])
    if (argc>2) waveOut=argv[2];
    }
    else {
-      printf("Usage: read_binary <filename> <waveformOutBool>\n");
+      printf("Usage: process <filename> <waveformOutBool>\n");
       return 0;
    }
 
