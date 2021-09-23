@@ -16,7 +16,7 @@ python processMultiBoardBinary_v4.py -b BINARYFILE [-o OUTFILE -v BIAS -x TXTDUM
 -x: Bool, if set to true will dump the waveform and processing info to a .txt file
 -w: Bool, if set to true will dump the waveform into to the ROOT file
 
-python processMultiBoardBinary_scans.py -b BINARYFILE -c <CSVPATH> [-o OUTFILE -w WAVEFORMBOOL]
+python processMultiBoardBinary_scans.py -b BINARYFILE -c CSVPATH [-o OUTFILE -w WAVEFORMBOOL]
 
 Same as above except for:
 -c: CSV file with bias voltage information, meant for bias voltage sweeps. Configured to work for a Keithley current source
