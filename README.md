@@ -39,11 +39,7 @@ This is the more developed processing chain. There are two scripts: "v8", which 
 with bias voltage information to be used during bias voltage sweeps.
 
 Usage:
-<<<<<<< HEAD
 python3 processMultiBoardBinary_v9.py -b <BINARYFILE> [-o OUTFILE -v BIAS -x TXTDUMPBOOL -w WAVEFORMBOOL]
-=======
-python processMultiBoardBinary_v4.py -b BINARYFILE [-o OUTFILE -v BIAS -x TXTDUMPBOOL -w WAVEFORMBOOL]
->>>>>>> 361bf18ed97269e9b43124d1d2e49aa60d1b9c6a
 
 -b: path to the binary file you want to process
 
