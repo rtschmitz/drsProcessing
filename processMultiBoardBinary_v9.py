@@ -370,15 +370,18 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--bias', 
                         help='Bias Voltage', required=False, type=float)
     parser.add_argument('-x', '--xml', 
-                        help='Bool to add a dump to text of all waveforms', required=False, type=bool)
+                        help='Bool to add a dump to text of all waveforms', required=False, action="store_true")
     parser.add_argument('-w', '--waveform', 
-                        help='Bool to add all waveforms to root output', required=False, type=bool)
+                        help='Bool to add all waveforms to root output', required=False, action="store_true")
     #parser.set_defaults(xml=True)
 
     args = vars(parser.parse_args())
 
     #datfiles = glob.glob(args["binaryfile"])
-    datfiles = glob.glob(args["binaryfile"]+"*.dat")
+    if ".dat" not in args["binaryfile"]:
+        datfiles = glob.glob(args["binaryfile"]+"*.dat")
+    else:
+        datfiles = [args["binaryfile"]]
     #datfiles = glob.glob(args["binaryfile"])
     try:
         csvpath = glob.glob(args['csvpath']+"*.csv")
@@ -397,7 +400,9 @@ if __name__ == "__main__":
 
     HV, currs, uts = parseCSV(csvpath)
     poolargs = []
+
     for each in datfiles:
+        print ("HERE")
         folder, name = each.rsplit('/', 1)
         name, ext = name.rsplit('.', 1)
         # avoid overwrite
