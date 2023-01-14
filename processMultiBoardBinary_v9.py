@@ -420,7 +420,6 @@ if __name__ == "__main__":
     poolargs = []
 
     for each in datfiles:
-        print ("HERE")
         folder, name = each.rsplit('/', 1)
         name, ext = name.rsplit('.', 1)
         # avoid overwrite
