@@ -68,6 +68,7 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
     timestamp_arr = {}
     
     t = r.TTree("Events", "Events")
+    metaTree = r.TTree("Metadata","Metadata")
     if len(HV) > 0 or len(uts) > 0:
     	eHV = t.Branch("bias_voltage", evtHV, 'bias/D')
     	eHV_adj = t.Branch("bias_voltage_adjusted", evtHV_adj, 'adjusted_bias/D')
@@ -91,18 +92,30 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
         exit(1)
 
     # get the boards in file
-    n_boards = 0
-    n_chans = 0
+    n_boards = np.array([0],dtype=int)
+    n_chans = np.array([0],dtype=int)
+    samplingRate = np.array([0.],"float32")
+    metaChannels = np.empty(100,dtype=int)
+    metaIds = np.empty(100,dtype=int)
+
+    b_numBoards = metaTree.Branch("numBoards",n_boards,"boads/I")
+    b_numChans = metaTree.Branch("numChan",n_chans,"numChan/I")
+    b_samplingRate = metaTree.Branch("samplingRate",samplingRate,"samplingRate/F")
+
+    b_channels = metaTree.Branch("channels",metaChannels,"channels[100]/I")
+    b_board_ids = metaTree.Branch("board_ids",metaIds,"board_ids[100]/I")
+    
     channels = []
     board_ids = []
     bin_widths = []
+    iOverall = 0
     while True:
         bhdr = getStr(fid, 2)
         if bhdr != "B#":
             fid.seek(-2, 1)
             break
         board_ids.append(getShort(fid))
-        n_boards += 1
+        n_boards[0] += 1
         bin_widths.append([])
         channels.append([])
         print("Found Board #"+str(board_ids[-1]))
@@ -120,17 +133,19 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
                 break
             cnum = int(getStr(fid, 1))
             print("Found channel #"+str(cnum))
-            n_chans += 1
-            channels[n_boards-1].append(cnum)
+            n_chans[0] += 1
+            channels[n_boards[0]-1].append(cnum)
             binw = getFloat(fid,N_BINS)
-            bin_widths[n_boards-1].append(binw)
+            bin_widths[n_boards[0]-1].append(binw)
+            metaChannels[iOverall] = cnum
+            metaIds[iOverall] = board_ids[-1]
+            iOverall += 1
 
-        if len(bin_widths[n_boards-1]) == 0:
+        if len(bin_widths[n_boards[0]-1]) == 0:
             print("ERROR: Board #{0} doesn't have any channels!".format(
                 board_ids[-1]))
 
-    #print(channels)
-    if n_boards == 0:
+    if n_boards[0] == 0:
         print("ERROR: didn't find any valid boards!")
         exit(1)
 
@@ -269,7 +284,7 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
         rangeCtr = getShort(fid)
         if n_evt == 1:
             print("  Range Center: "+str(rangeCtr))
-        for ibd in range(n_boards):
+        for ibd in range(n_boards[0]):
             getStr(fid, 2)
             b_num = getShort(fid)
             getStr(fid, 2)
@@ -338,7 +353,7 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
                 if goodFlag:
                     if txtFlag:
                         if n_evt == 1 and int(id_chn[-1]) == 1:
-                            txtout.write("NCHANS: {0}\n".format(n_chans))
+                            txtout.write("NCHANS: {0}\n".format(n_chans[0]))
                             txtout.write("labels: EVTNUM BOARD_CHAN BIASVOLTAGE TIMESTAMP AREA(nVs) vMAX(mV) tMAX(ns) SCALER\n")
 		    	#txtout.write("waveform: "+n_evt+" "+id_chn+" "+timestamp+" "+area+" "+vMax+" "+tMax+" "+scaler+"\n")txtout.write("waveform: {0} {1} {2} {3} {4} {5} {6} {7}\n".format(n_evt,id_chn,biasVoltage,timestamp,area,vMax,tMax,scaler))
                         txtout.write("waveform: {0} {1} {2} {3} {4} {5} {6} {7}\n".format(n_evt,id_chn,biasVoltage,timestamp,area,vMax,tMax,scaler))
@@ -346,14 +361,17 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
                         for k in range(N_BINS):
                             txtout.write("{0:10.3f} {1:10.3f}\n".format(times[k],voltages[k]))
             t.Fill()
-    
     t_tot = t_end - t_start
     t_sec = t_tot.total_seconds()
 
     print("Measured sampling rate: {0:.2f} GHz".format(1.0/np.mean(rates)))
+    samplingRate[0] =1.0/np.mean(rates) 
+    print (samplingRate[0])
+    metaTree.Fill()
     print("Total time of run = " + str(t_tot) +
           " = " + str(t_sec) + " seconds.")
     print("Event rate = " + str(n_evt/t_sec) + " Hz")
+    metaTree.Write()
     t.Write()
     fout.Close()
 
