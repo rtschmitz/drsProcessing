@@ -220,8 +220,8 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
     n_scan = 0
     scan_up = True
     start_row = 2
-    #while True:
-    while n_evt<1000:
+    while True:
+    #while n_evt<1000:
         ehdr = getStr(fid, 4)
         if ehdr is None:
             break
