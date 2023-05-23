@@ -117,11 +117,13 @@ def postprocess(voltages, times):
     if(imax > 0):
     #if(imax > 100 and imax < 1000):
         # after peak
+        offset = np.mean(vs[:int(imax*1/2)])
+        vs -= offset
         vs_high = vs[imax:]
         # before peak
         vs_low = vs[:imax]
         # where [axis][index]
-        noise = 0.5*(np.percentile(vs[:100],95) - np.percentile(vs[:100],5))
+        noise = 0.5*(np.percentile(vs[:int(imax*1/2)],95) - np.percentile(vs[:int(imax*1/2)],5))
         try:
             iend = -1
             testindex=0
@@ -145,7 +147,7 @@ def postprocess(voltages, times):
                     testindex=testindex-1
         except:
             istart = 0
-            #print("start at 0")
+        #    #print("start at 0")
 	#print("noise,start,end")
 	#print(noise)
 	#print(istart)
@@ -156,6 +158,7 @@ def postprocess(voltages, times):
         tMax = times[imax]
         tStart = times[istart]
         tEnd = times[iend]
+        vs += offset
         offset = np.mean(vs[:int(istart*3/4)])
         vs -= offset
         width = iend-istart

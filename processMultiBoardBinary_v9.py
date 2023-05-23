@@ -18,8 +18,8 @@ import numpy as np
 import ROOT as r
 import time
 from multiprocessing import Pool
-#from utils_v9 import *
-from utilsMultipeak_v9 import *
+from utils_v9 import *
+#from utilsMultipeak_v9 import *
 
 def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag=False, waveFlag=False):
     print("Processing " + name)
@@ -220,7 +220,8 @@ def processMultiChanBinary(name, HV=[], currs=[], uts=[], biasVoltage=0, txtFlag
     n_scan = 0
     scan_up = True
     start_row = 2
-    while True:
+    #while True:
+    while n_evt<1000:
         ehdr = getStr(fid, 4)
         if ehdr is None:
             break
